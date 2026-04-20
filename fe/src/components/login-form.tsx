@@ -127,7 +127,11 @@ export function LoginForm({
                 ) : null}
               </Field>
               <Field>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  data-testid="login-btn"
+                >
                   {isSubmitting ? "Signing in..." : "Login"}
                 </Button>
                 <FieldDescription className="text-center">
