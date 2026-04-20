@@ -1,3 +1,4 @@
+import { useAppDispatch } from "@/app/hooks"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,45 +15,44 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useAuth } from "@/contexts/AuthContext"
-import { loginApi } from "@/lib/auth-api"
+import {
+  loginSchema,
+  type LoginFormValues,
+} from "@/features/validation/auth.schema"
+import { loginThunk } from "@/features/validation/auth.slice"
 import { cn } from "@/lib/utils"
 import { ROUTES } from "@/routes/route.constants"
-import { useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { authLogin } = useAuth()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setErrorMessage("")
-    setIsSubmitting(true)
-
+  const onSubmit = async (values: LoginFormValues) => {
     try {
-      const response = await loginApi({
-        email,
-        password,
-      })
-
-      authLogin({
-        token: response.accessToken,
-        user: response.user,
-      })
-
+      await dispatch(loginThunk(values)).unwrap()
       navigate(ROUTES.DASHBOARD, { replace: true })
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Login failed")
-    } finally {
-      setIsSubmitting(false)
+      setError("root", {
+        message: error instanceof Error ? error.message : "Login failed",
+      })
     }
   }
 
@@ -66,7 +66,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
                 <Button variant="outline" type="button">
@@ -97,10 +97,13 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  {...register("email")}
                 />
+                {errors.email ? (
+                  <FieldDescription className="text-red-600">
+                    {errors.email.message}
+                  </FieldDescription>
+                ) : null}
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -115,10 +118,13 @@ export function LoginForm({
                 <Input
                   id="password"
                   type="password"
-                  required
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  {...register("password")}
                 />
+                {errors.password ? (
+                  <FieldDescription className="text-red-600">
+                    {errors.password.message}
+                  </FieldDescription>
+                ) : null}
               </Field>
               <Field>
                 <Button type="submit" disabled={isSubmitting}>
@@ -128,9 +134,9 @@ export function LoginForm({
                   Don&apos;t have an account?{" "}
                   <Link to={ROUTES.AUTH.SIGNUP}>Sign up</Link>
                 </FieldDescription>
-                {errorMessage ? (
+                {errors.root?.message ? (
                   <FieldDescription className="text-center text-red-600">
-                    {errorMessage}
+                    {errors.root.message}
                   </FieldDescription>
                 ) : null}
               </Field>

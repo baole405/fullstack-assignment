@@ -1,10 +1,15 @@
-import { useAuth } from "@/contexts/AuthContext"
+import { useAppSelector } from "@/app/hooks"
 import { ROUTES } from "@/routes/route.constants"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 
 export default function ProtectedRoute() {
-  const { isAuthenticated } = useAuth()
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+  const isChecking = useAppSelector((state) => state.auth.isChecking)
   const location = useLocation()
+
+  if (isChecking) {
+    return null
+  }
 
   if (!isAuthenticated) {
     return (

@@ -1,3 +1,4 @@
+import { useAppDispatch } from "@/app/hooks"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -13,54 +14,52 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useAuth } from "@/contexts/AuthContext"
-import { signupApi } from "@/lib/auth-api"
+import {
+  signupSchema,
+  type SignupFormValues,
+} from "@/features/validation/auth.schema"
+import { signupThunk } from "@/features/validation/auth.slice"
 import { cn } from "@/lib/utils"
 import { ROUTES } from "@/routes/route.constants"
-import { useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { authLogin } = useAuth()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  })
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setErrorMessage("")
-
-    if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match")
-      return
-    }
-
-    setIsSubmitting(true)
-
+  const onSubmit = async (values: SignupFormValues) => {
     try {
-      const response = await signupApi({
-        name,
-        email,
-        password,
-      })
-
-      authLogin({
-        token: response.accessToken,
-        user: response.user,
-      })
-
+      await dispatch(
+        signupThunk({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        })
+      ).unwrap()
       navigate(ROUTES.DASHBOARD, { replace: true })
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Sign up failed")
-    } finally {
-      setIsSubmitting(false)
+      setError("root", {
+        message: error instanceof Error ? error.message : "Sign up failed",
+      })
     }
   }
 
@@ -74,7 +73,7 @@ export function SignupForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="name">Full Name</FieldLabel>
@@ -82,10 +81,13 @@ export function SignupForm({
                   id="name"
                   type="text"
                   placeholder="John Doe"
-                  required
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  {...register("name")}
                 />
+                {errors.name ? (
+                  <FieldDescription className="text-red-600">
+                    {errors.name.message}
+                  </FieldDescription>
+                ) : null}
               </Field>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -93,10 +95,13 @@ export function SignupForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  {...register("email")}
                 />
+                {errors.email ? (
+                  <FieldDescription className="text-red-600">
+                    {errors.email.message}
+                  </FieldDescription>
+                ) : null}
               </Field>
               <Field>
                 <Field className="grid grid-cols-2 gap-4">
@@ -105,10 +110,13 @@ export function SignupForm({
                     <Input
                       id="password"
                       type="password"
-                      required
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
+                      {...register("password")}
                     />
+                    {errors.password ? (
+                      <FieldDescription className="text-red-600">
+                        {errors.password.message}
+                      </FieldDescription>
+                    ) : null}
                   </Field>
                   <Field>
                     <FieldLabel htmlFor="confirm-password">
@@ -117,16 +125,17 @@ export function SignupForm({
                     <Input
                       id="confirm-password"
                       type="password"
-                      required
-                      value={confirmPassword}
-                      onChange={(event) =>
-                        setConfirmPassword(event.target.value)
-                      }
+                      {...register("confirmPassword")}
                     />
+                    {errors.confirmPassword ? (
+                      <FieldDescription className="text-red-600">
+                        {errors.confirmPassword.message}
+                      </FieldDescription>
+                    ) : null}
                   </Field>
                 </Field>
                 <FieldDescription>
-                  Must be at least 8 characters long.
+                  Must be at least 6 characters long.
                 </FieldDescription>
               </Field>
               <Field>
@@ -137,9 +146,9 @@ export function SignupForm({
                   Already have an account?{" "}
                   <Link to={ROUTES.AUTH.LOGIN}>Sign in</Link>
                 </FieldDescription>
-                {errorMessage ? (
+                {errors.root?.message ? (
                   <FieldDescription className="text-center text-red-600">
-                    {errorMessage}
+                    {errors.root.message}
                   </FieldDescription>
                 ) : null}
               </Field>

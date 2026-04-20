@@ -1,16 +1,24 @@
+import { useAppDispatch } from "@/app/hooks"
 import { Toaster } from "@/components/ui/sonner"
+import { verifySessionThunk } from "@/features/validation/auth.slice"
+import { useEffect } from "react"
 import { AppRoutes } from "./routes/route.index"
-import { AuthProvider } from "/contexts/AuthProvider"
 
 const TITLE = "FE-devsamurai"
 
 function App() {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    document.title = TITLE
+    void dispatch(verifySessionThunk())
+  }, [dispatch])
+
   return (
-    <AuthProvider>
-      <title>{TITLE}</title>
+    <>
       <Toaster position="top-right" />
       <AppRoutes />
-    </AuthProvider>
+    </>
   )
 }
 

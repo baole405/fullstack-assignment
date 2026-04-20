@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useAppDispatch, useAppSelector } from "@/app/hooks"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
@@ -13,7 +14,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { useAuth } from "@/contexts/AuthContext"
+import { logout } from "@/features/validation/auth.slice"
 import {
   AudioLinesIcon,
   BookOpenIcon,
@@ -26,6 +27,7 @@ import {
   TerminalIcon,
   TerminalSquareIcon,
 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 // This is sample data.
 const data = {
@@ -158,7 +160,14 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, authLogout } = useAuth()
+  const user = useAppSelector((state) => state.auth.user)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    dispatch(logout())
+    navigate("/auth/login", { replace: true })
+  }
 
   const sidebarUser = {
     name: user?.name || "User",
@@ -176,7 +185,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={sidebarUser} onLogout={authLogout} />
+        <NavUser user={sidebarUser} onLogout={handleLogout} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
