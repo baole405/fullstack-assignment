@@ -16,7 +16,32 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { MoreHorizontalIcon, FolderIcon, ArrowRightIcon, Trash2Icon } from "lucide-react"
+import {
+  ArrowRightIcon,
+  FolderIcon,
+  MoreHorizontalIcon,
+  PlusIcon,
+  Trash2Icon,
+} from "lucide-react"
+import { useState } from "react"
+
+const extraProjects = [
+  {
+    name: "Shopify",
+    url: "#",
+    icon: <FolderIcon />,
+  },
+  {
+    name: "Oracle",
+    url: "#",
+    icon: <FolderIcon />,
+  },
+  {
+    name: "Nvidia",
+    url: "#",
+    icon: <FolderIcon />,
+  },
+]
 
 export function NavProjects({
   projects,
@@ -28,12 +53,18 @@ export function NavProjects({
   }[]
 }) {
   const { isMobile } = useSidebar()
+  const [showMore, setShowMore] = useState(false)
+
+  const visibleProjects = showMore ? [...projects, ...extraProjects] : projects
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
+      <SidebarGroupLabel>
+        <FolderIcon className="text-sidebar-foreground" />
+        Projects
+      </SidebarGroupLabel>
       <SidebarMenu>
-        {projects.map((item) => (
+        {visibleProjects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
@@ -47,8 +78,7 @@ export function NavProjects({
                   showOnHover
                   className="aria-expanded:bg-muted"
                 >
-                  <MoreHorizontalIcon
-                  />
+                  <MoreHorizontalIcon />
                   <span className="sr-only">More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
@@ -75,9 +105,13 @@ export function NavProjects({
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <MoreHorizontalIcon className="text-sidebar-foreground/70" />
-            <span>More</span>
+          <SidebarMenuButton
+            type="button"
+            onClick={() => setShowMore((current) => !current)}
+            className="text-sidebar-foreground/70"
+          >
+            <PlusIcon className="text-sidebar-foreground/70" />
+            <span>{showMore ? "Show less" : "More"}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

@@ -23,10 +23,11 @@ import {
   FrameIcon,
   GalleryVerticalEndIcon,
   MapIcon,
-  PieChartIcon,
-  Settings2Icon,
+  MessageSquareIcon,
+  SettingsIcon,
   TerminalIcon,
   TerminalSquareIcon,
+  WarehouseIcon,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
@@ -120,7 +121,7 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: <Settings2Icon />,
+      icon: <SettingsIcon />,
       items: [
         {
           title: "General",
@@ -143,17 +144,17 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Google",
       url: "#",
       icon: <FrameIcon />,
     },
     {
-      name: "Sales & Marketing",
+      name: "Airbnb",
       url: "#",
-      icon: <PieChartIcon />,
+      icon: <WarehouseIcon />,
     },
     {
-      name: "Travel",
+      name: "Microsoft",
       url: "#",
       icon: <MapIcon />,
     },
@@ -187,6 +188,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <div className="relative">
+          <div className="mb-4 grid gap-2 rounded-none border border-muted/60 bg-muted/40 p-3 group-data-[collapsible=icon]:hidden">
+            <button
+              type="button"
+              className="inline-flex items-center justify-between border border-input/70 bg-background px-3 py-2 text-sm font-medium transition hover:bg-muted"
+            >
+              <span className="flex items-center gap-2">
+                <span className="inline-flex h-4 w-4 items-center justify-center text-base font-semibold">
+                  +
+                </span>
+                Invite member
+              </span>
+              <ArrowDownLeftIcon className="size-4 text-muted-foreground" />
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center justify-between border border-input/70 bg-background px-3 py-2 text-sm font-medium transition hover:bg-muted"
+            >
+              <span className="flex items-center gap-2">
+                <MessageSquareIcon className="size-4" />
+                Feedback
+              </span>
+              <ArrowDownLeftIcon className="size-4 text-muted-foreground" />
+            </button>
+          </div>
           {showLogoutHint ? (
             <div className="mb-2 rounded-md border border-emerald-200 bg-emerald-50 p-2 text-xs text-emerald-900 shadow-sm">
               <div className="flex items-start justify-between gap-2">

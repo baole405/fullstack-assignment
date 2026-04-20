@@ -87,6 +87,15 @@ export function LoginForm({
                   </svg>
                   Login with Google
                 </Button>
+                <Button variant="outline" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="8" height="8" fill="#f35325" />
+                    <rect x="13" y="3" width="8" height="8" fill="#81bc06" />
+                    <rect x="3" y="13" width="8" height="8" fill="#05a6f0" />
+                    <rect x="13" y="13" width="8" height="8" fill="#ffba08" />
+                  </svg>
+                  Login with Microsoft
+                </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
