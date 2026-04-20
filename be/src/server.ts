@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
 import morgan from "morgan";
+import authRouter from "./modules/auth/auth.routes";
 
 export const createServer = () => {
   const app = express();
@@ -11,8 +12,11 @@ export const createServer = () => {
     .use(express.json())
     .use(express.urlencoded());
 
-  app.get("/health", (req: Request, res: Response) => {
+  app.get("/health", (_req: Request, res: Response) => {
     res.json({ ok: true });
   });
+
+  app.use("/auth", authRouter);
+
   return app;
 };

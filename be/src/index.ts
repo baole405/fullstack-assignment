@@ -1,9 +1,9 @@
+import config from "./config";
 import repository from "./data/repos";
 import { createServer } from "./server";
 
 const server = createServer();
-
-const port = process.env.PORT || 5000;
+const port = config.app.port;
 
 server.listen(port, async () => {
   try {
@@ -12,5 +12,6 @@ server.listen(port, async () => {
   } catch (error) {
     console.error("Failed to connect database:", error);
   }
+
   console.log(`API is running on port ${port}`);
 });

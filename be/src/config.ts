@@ -1,11 +1,17 @@
 const config = {
+  app: {
+    port: Number(process.env.PORT || 5000),
+  },
+  auth: {
+    jwtSecret: process.env.JWT_SECRET || "devsamurai-secret",
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1d",
+  },
   db: {
     host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 8080,
-    name: process.env.DB_NAME || "devsamurai",
+    port: Number(process.env.DB_PORT || 5432),
+    database: process.env.DB_DATABASE || "devsamurai",
     user: process.env.DB_USER || "postgres",
     password: process.env.DB_PASSWORD || "postgres",
-    database: process.env.DB_DATABASE || "devsamurai",
   },
 };
 
