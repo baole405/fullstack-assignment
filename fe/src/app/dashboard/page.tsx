@@ -1,7 +1,7 @@
 "use client"
 
 import { addDays, format, parseISO } from "date-fns"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import {
   Area,
   AreaChart,
@@ -23,6 +23,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
@@ -40,8 +48,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarDays, Clock, MoonIcon, SunIcon } from "lucide-react"
+import {
+  CalendarDays,
+  ChevronDown,
+  Clock,
+  MoonIcon,
+  Palette,
+  SunIcon,
+} from "lucide-react"
 import type { DateRange } from "react-day-picker"
+import { toast } from "sonner"
 
 import dashboardData from "./data.json"
 
@@ -61,31 +77,49 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("30d")
   const [startTime, setStartTime] = useState("08:00")
   const [endTime, setEndTime] = useState("18:00")
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, palette, setPalette } = useTheme()
+
+  const paletteOptions = [
+    { value: "vega", label: "Vega", color: "#5b93ff" },
+    { value: "nova", label: "Nova", color: "#8b5cf6" },
+    { value: "maia", label: "Maia", color: "#ec4899" },
+    { value: "lyra", label: "Lyra", color: "#22c55e" },
+    { value: "mira", label: "Mira", color: "#f59e0b" },
+    { value: "luma", label: "Luma", color: "#14b8a6" },
+    { value: "sera", label: "Sera", color: "#9333ea" },
+  ] as const
+
+  type PaletteValue = (typeof paletteOptions)[number]["value"]
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark")
   }
 
-  useEffect(() => {
-    if (activeTab === "custom") {
+  const onSelectPalette = (selectedPalette: string) => {
+    const paletteValue = selectedPalette as PaletteValue
+    setPalette(paletteValue)
+    const selectedOption = paletteOptions.find(
+      (option) => option.value === paletteValue
+    )
+
+    toast.success(`Đã đổi theme sang ${selectedOption?.label ?? paletteValue}`)
+  }
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value)
+
+    if (value === "custom") {
       return
     }
 
     const end = new Date("2025-07-09")
     const from = addDays(
       end,
-      activeTab === "1d"
-        ? -1
-        : activeTab === "3d"
-          ? -3
-          : activeTab === "7d"
-            ? -7
-            : -30
+      value === "1d" ? -1 : value === "3d" ? -3 : value === "7d" ? -7 : -30
     )
 
     setSelectedRange({ from, to: end })
-  }, [activeTab])
+  }
 
   const rangeLabel = useMemo(() => {
     if (!selectedRange.from || !selectedRange.to) {
@@ -160,6 +194,39 @@ export default function Dashboard() {
                 Repo
               </a>
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Palette className="size-4" />
+                  {paletteOptions.find((option) => option.value === palette)
+                    ?.label ?? "Palette"}
+                  <ChevronDown className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Change palette</DropdownMenuLabel>
+                <DropdownMenuRadioGroup
+                  value={palette}
+                  onValueChange={onSelectPalette}
+                >
+                  {paletteOptions.map((option) => (
+                    <DropdownMenuRadioItem
+                      key={option.value}
+                      value={option.value}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full border border-border"
+                          style={{ backgroundColor: option.color }}
+                        />
+                        {option.label}
+                      </div>
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               variant="outline"
               size="sm"
@@ -182,7 +249,7 @@ export default function Dashboard() {
                 </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <Tabs value={activeTab} onValueChange={handleTabChange}>
                   <TabsList className="rounded-full bg-muted/80 p-1">
                     <TabsTrigger value="1d">1d</TabsTrigger>
                     <TabsTrigger value="3d">3d</TabsTrigger>
@@ -243,7 +310,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="h-[340px] min-h-[280px]">
+                  <div className="h-85 min-h-70">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
                         data={filteredChartData}
@@ -280,14 +347,13 @@ export default function Dashboard() {
                           }
                         />
                         <Tooltip
-                          formatter={(value: any) => [
-                            `${value} leads`,
-                            "Leads",
-                          ]}
-                          labelFormatter={(label: any) =>
+                          formatter={(value) =>
+                            [`${value ?? 0} leads`, "Leads"] as [string, string]
+                          }
+                          labelFormatter={(label) =>
                             typeof label === "string"
                               ? format(parseISO(label), "MMM d, yyyy")
-                              : label
+                              : String(label)
                           }
                         />
                         <Area
