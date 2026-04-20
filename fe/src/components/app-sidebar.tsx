@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar"
 import { logout } from "@/features/validation/auth.slice"
 import {
+  ArrowDownLeftIcon,
   AudioLinesIcon,
   BookOpenIcon,
   BotIcon,
@@ -163,6 +164,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAppSelector((state) => state.auth.user)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const [showLogoutHint, setShowLogoutHint] = React.useState(true)
 
   const handleLogout = () => {
     dispatch(logout())
@@ -172,7 +174,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const sidebarUser = {
     name: user?.name || "User",
     email: user?.email || "-",
-    avatar: "/avatars/shadcn.jpg",
   }
 
   return (
@@ -185,7 +186,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={sidebarUser} onLogout={handleLogout} />
+        <div className="relative">
+          {showLogoutHint ? (
+            <div className="mb-2 rounded-md border border-emerald-200 bg-emerald-50 p-2 text-xs text-emerald-900 shadow-sm">
+              <div className="flex items-start justify-between gap-2">
+                <p>If want to logout, click here.</p>
+                <button
+                  type="button"
+                  onClick={() => setShowLogoutHint(false)}
+                  className="cursor-pointer text-emerald-700 hover:text-emerald-900"
+                  aria-label="Close logout hint"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="mt-1 flex items-center gap-1 text-emerald-700">
+                <ArrowDownLeftIcon className="size-3" />
+                <span>user menu (bottom-left)</span>
+              </div>
+            </div>
+          ) : null}
+          <NavUser user={sidebarUser} onLogout={handleLogout} />
+        </div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

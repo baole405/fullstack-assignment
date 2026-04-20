@@ -104,7 +104,7 @@ export function SignupForm({
                 ) : null}
               </Field>
               <Field>
-                <Field className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <Field>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
                     <Input
@@ -133,7 +133,7 @@ export function SignupForm({
                       </FieldDescription>
                     ) : null}
                   </Field>
-                </Field>
+                </div>
                 <FieldDescription>
                   Must be at least 6 characters long.
                 </FieldDescription>
