@@ -13,6 +13,12 @@ export type AuthApiUser = {
 export type AuthApiResponse = {
   user: AuthApiUser
   accessToken: string
+  refreshToken: string
+}
+
+type RefreshTokenResponse = {
+  accessToken: string
+  refreshToken: string
 }
 
 type MeApiResponse = {
@@ -68,6 +74,24 @@ export const loginApi = async (payload: {
   }
 
   return (await response.json()) as AuthApiResponse
+}
+
+export const refreshTokenApi = async (
+  refreshToken: string
+): Promise<RefreshTokenResponse> => {
+  const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ refreshToken }),
+  })
+
+  if (!response.ok) {
+    throw new Error(await parseError(response))
+  }
+
+  return (await response.json()) as RefreshTokenResponse
 }
 
 export const meApi = async (token: string): Promise<MeApiResponse> => {

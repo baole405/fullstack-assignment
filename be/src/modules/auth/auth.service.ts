@@ -17,6 +17,11 @@ type UserPublic = {
   email: string;
 };
 
+type AuthTokenPayload = {
+  sub?: string;
+  email?: string;
+};
+
 type SignupInput = {
   name?: string;
   email?: string;
@@ -53,6 +58,71 @@ const signAccessToken = (user: UserPublic): string => {
       expiresIn,
     },
   );
+};
+
+const signRefreshToken = (user: UserPublic): string => {
+  const expiresIn = config.auth
+    .jwtRefreshExpiresIn as jwt.SignOptions["expiresIn"];
+
+  return jwt.sign(
+    {
+      sub: String(user.id),
+      email: user.email,
+    },
+    config.auth.jwtSecret,
+    {
+      expiresIn,
+    },
+  );
+};
+
+export const refreshAccessToken = async (refreshToken: string) => {
+  if (!refreshToken) {
+    throw new HttpError(400, "refreshToken is required");
+  }
+
+  let decoded: AuthTokenPayload;
+
+  try {
+    decoded = jwt.verify(
+      refreshToken,
+      config.auth.jwtSecret,
+    ) as AuthTokenPayload;
+  } catch (_error) {
+    throw new HttpError(401, "Invalid or expired refresh token");
+  }
+
+  const userId = Number(decoded.sub);
+
+  if (!decoded.sub || Number.isNaN(userId)) {
+    throw new HttpError(401, "Invalid refresh token payload");
+  }
+
+  const user = await repository.sequelizeClient.query<UserPublic>(
+    `
+      SELECT id, name, email
+      FROM users
+      WHERE id = :id
+      LIMIT 1
+    `,
+    {
+      type: QueryTypes.SELECT,
+      replacements: { id: userId },
+      plain: true,
+    },
+  );
+
+  if (!user) {
+    throw new HttpError(401, "Invalid refresh token");
+  }
+
+  const accessToken = signAccessToken(user);
+  const newRefreshToken = signRefreshToken(user);
+
+  return {
+    accessToken,
+    refreshToken: newRefreshToken,
+  };
 };
 
 export const signupUser = async (input: SignupInput) => {
@@ -102,8 +172,9 @@ export const signupUser = async (input: SignupInput) => {
   }
 
   const accessToken = signAccessToken(user);
+  const refreshToken = signRefreshToken(user);
 
-  return { user, accessToken };
+  return { user, accessToken, refreshToken };
 };
 
 export const loginUser = async (input: LoginInput) => {
@@ -145,9 +216,11 @@ export const loginUser = async (input: LoginInput) => {
   };
 
   const accessToken = signAccessToken(publicUser);
+  const refreshToken = signRefreshToken(publicUser);
 
   return {
     user: publicUser,
     accessToken,
+    refreshToken,
   };
 };
