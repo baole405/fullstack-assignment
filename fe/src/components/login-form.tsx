@@ -12,7 +12,6 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
@@ -23,6 +22,7 @@ import { loginThunk } from "@/features/validation/auth.slice"
 import { cn } from "@/lib/utils"
 import { ROUTES } from "@/routes/route.constants"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Lock, Mail } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 
@@ -58,109 +58,129 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
+      <Card className="overflow-hidden rounded-3xl border border-muted/50 bg-background shadow-lg shadow-muted/10">
+        <CardHeader className="px-10 pt-10 text-center">
+          <CardTitle className="text-2xl font-semibold">
+            Sign in to your account
+          </CardTitle>
           <CardDescription>
-            Login with your Apple or Google account
+            Welcome back! Please sign in to continue.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6 px-10 pt-4 pb-10">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FieldGroup>
-              <Field>
-                <Button variant="outline" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Login with Apple
-                </Button>
-                <Button variant="outline" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Login with Google
-                </Button>
-                <Button variant="outline" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="8" height="8" fill="#f35325" />
-                    <rect x="13" y="3" width="8" height="8" fill="#81bc06" />
-                    <rect x="3" y="13" width="8" height="8" fill="#05a6f0" />
-                    <rect x="13" y="13" width="8" height="8" fill="#ffba08" />
-                  </svg>
-                  Login with Microsoft
-                </Button>
-              </Field>
-              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                Or continue with
-              </FieldSeparator>
+            <FieldGroup className="space-y-4">
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  {...register("email")}
-                />
+                <div className="relative">
+                  <Mail className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    className="pl-10"
+                    {...register("email")}
+                  />
+                </div>
                 {errors.email ? (
-                  <FieldDescription className="text-red-600">
+                  <FieldDescription className="text-destructive">
                     {errors.email.message}
                   </FieldDescription>
                 ) : null}
               </Field>
               <Field>
-                <div className="flex items-center">
+                <div className="flex items-center justify-between gap-4">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-4 hover:underline"
+                  <Link
+                    to="#"
+                    className="text-sm font-medium text-primary hover:underline"
                   >
-                    Forgot your password?
-                  </a>
+                    Forgot password?
+                  </Link>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  {...register("password")}
-                />
+                <div className="relative">
+                  <Lock className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    className="pl-10"
+                    {...register("password")}
+                  />
+                </div>
                 {errors.password ? (
-                  <FieldDescription className="text-red-600">
+                  <FieldDescription className="text-destructive">
                     {errors.password.message}
                   </FieldDescription>
-                ) : null}
+                ) : (
+                  <FieldDescription className="text-muted-foreground">
+                    8 or more characters
+                  </FieldDescription>
+                )}
               </Field>
               <Field>
                 <Button
                   type="submit"
+                  className="w-full bg-black text-white hover:bg-black/90"
                   disabled={isSubmitting}
                   data-testid="login-btn"
                 >
-                  {isSubmitting ? "Signing in..." : "Login"}
+                  {isSubmitting ? "Signing in..." : "Sign in"}
                 </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account?{" "}
-                  <Link to={ROUTES.AUTH.SIGNUP}>Sign up</Link>
-                </FieldDescription>
-                {errors.root?.message ? (
-                  <FieldDescription className="text-center text-red-600">
-                    {errors.root.message}
-                  </FieldDescription>
-                ) : null}
               </Field>
             </FieldGroup>
           </form>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            <span>Or continue with</span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <div className="grid gap-3">
+            <Button
+              variant="outline"
+              className="w-full justify-center gap-3"
+              type="button"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="size-4"
+              >
+                <path
+                  d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
+                  fill="currentColor"
+                />
+              </svg>
+              Google
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-center gap-3"
+              type="button"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="size-4"
+              >
+                <rect x="3" y="3" width="8" height="8" fill="#f35325" />
+                <rect x="13" y="3" width="8" height="8" fill="#81bc06" />
+                <rect x="3" y="13" width="8" height="8" fill="#05a6f0" />
+                <rect x="13" y="13" width="8" height="8" fill="#ffba08" />
+              </svg>
+              Microsoft
+            </Button>
+          </div>
+          <div className="text-center text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link
+              to={ROUTES.AUTH.SIGNUP}
+              className="font-medium text-primary hover:underline"
+            >
+              Sign up
+            </Link>
+          </div>
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription>
     </div>
   )
 }

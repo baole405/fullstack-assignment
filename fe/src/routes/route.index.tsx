@@ -9,14 +9,16 @@ import { Navigate, Route, Routes } from "react-router-dom"
 
 function AuthShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-      <div className="flex w-full max-w-sm flex-col gap-6">
-        <a href="#" className="flex items-center gap-2 self-center font-medium">
-          <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <GalleryVerticalEndIcon className="size-4" />
+    <div className="flex min-h-screen items-center justify-center bg-muted px-4 py-10 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-6">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-foreground text-background shadow-sm shadow-muted/20">
+            <GalleryVerticalEndIcon className="size-5" />
           </div>
-          Acme Inc.
-        </a>
+          <p className="text-sm font-semibold tracking-[0.24em] text-muted-foreground uppercase">
+            Acme
+          </p>
+        </div>
         {children}
       </div>
     </div>
