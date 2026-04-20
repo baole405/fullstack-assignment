@@ -92,8 +92,18 @@ Useful frontend commands:
 
 ## Screenshots
 
-- Frontend auth page sample: ![Frontend](docs/1-fe.png)
-- Backend-related reference image: ![Backend](docs/2-be.png)
+- FE Login page: ![FE Login](docs/02-fe-login.png)
+- FE Signup page: ![FE Signup](docs/01-fe-signup.png)
+- FE Dashboard page: ![FE Dashboard](docs/03-fe-dashboard.png)
+- FE Logout menu and helper hint: ![FE Logout](docs/04-fe-logout.png)
+- Vercel deployments status: ![Vercel Deployments](docs/06-deploy-vercel.png)
+- Render backend service status: ![Render Service](docs/07-deploy-render.png)
+- PostgreSQL users table verification: ![DB Users Table](docs/08-db-users-table.png)
+
+## Live Deployment
+
+- Frontend (Vercel): https://fullstack-assignment-gamma.vercel.app
+- Backend API (Render): https://fullstack-assignment-6zax.onrender.com
 
 ## Deployment Notes
 
