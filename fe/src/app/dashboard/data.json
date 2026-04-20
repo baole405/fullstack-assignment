@@ -1,0 +1,74 @@
+{
+  "overview": {
+    "title": "Lead generation",
+    "description": "New contacts added to the pool.",
+    "subtitle": "Track qualified inbound leads across people and companies.",
+    "people": 48,
+    "companies": 17,
+    "trend": "+12% compared to last period",
+    "metrics": [
+      { "label": "People", "value": "48" },
+      { "label": "Companies", "value": "17" }
+    ]
+  },
+  "timeSeries": [
+    { "date": "2025-06-09", "value": 22 },
+    { "date": "2025-06-10", "value": 24 },
+    { "date": "2025-06-11", "value": 28 },
+    { "date": "2025-06-12", "value": 35 },
+    { "date": "2025-06-13", "value": 30 },
+    { "date": "2025-06-14", "value": 38 },
+    { "date": "2025-06-15", "value": 44 },
+    { "date": "2025-06-16", "value": 31 },
+    { "date": "2025-06-17", "value": 29 },
+    { "date": "2025-06-18", "value": 37 },
+    { "date": "2025-06-19", "value": 43 },
+    { "date": "2025-06-20", "value": 52 },
+    { "date": "2025-06-21", "value": 47 },
+    { "date": "2025-06-22", "value": 51 },
+    { "date": "2025-06-23", "value": 45 },
+    { "date": "2025-06-24", "value": 56 },
+    { "date": "2025-06-25", "value": 59 },
+    { "date": "2025-06-26", "value": 52 },
+    { "date": "2025-06-27", "value": 48 },
+    { "date": "2025-06-28", "value": 57 },
+    { "date": "2025-06-29", "value": 61 },
+    { "date": "2025-06-30", "value": 66 },
+    { "date": "2025-07-01", "value": 72 },
+    { "date": "2025-07-02", "value": 64 },
+    { "date": "2025-07-03", "value": 71 },
+    { "date": "2025-07-04", "value": 63 },
+    { "date": "2025-07-05", "value": 69 },
+    { "date": "2025-07-06", "value": 75 },
+    { "date": "2025-07-07", "value": 81 },
+    { "date": "2025-07-08", "value": 77 },
+    { "date": "2025-07-09", "value": 84 }
+  ],
+  "topContacts": [
+    { "company": "Google", "name": "Mariya Simpson", "value": 44 },
+    { "company": "Airbnb", "name": "Alex Johnson", "value": 38 },
+    { "company": "Microsoft", "name": "Lina Wright", "value": 32 },
+    { "company": "Shopify", "name": "Dan Huang", "value": 28 },
+    { "company": "Spotify", "name": "Sofia Patel", "value": 26 }
+  ],
+  "leastVisitedContacts": [
+    { "company": "Broadcom", "name": "Julie Chen", "value": 3 },
+    { "company": "Nvidia", "name": "Kevin Hart", "value": 4 },
+    { "company": "Salesforce", "name": "Priya Singh", "value": 5 },
+    { "company": "Oracle", "name": "Alicia Reed", "value": 6 },
+    { "company": "Slack", "name": "Mark Wu", "value": 7 }
+  ],
+  "scheduleEvents": [
+    { "id": 1, "title": "Team sync", "date": "2025-07-03", "time": "09:30", "status": "Confirmed", "owner": "Huy Channel" },
+    { "id": 2, "title": "Client review", "date": "2025-07-03", "time": "11:00", "status": "Pending", "owner": "Bao Le" },
+    { "id": 3, "title": "Product demo", "date": "2025-07-04", "time": "14:00", "status": "Confirmed", "owner": "Thao Nguyen" },
+    { "id": 4, "title": "Launch planning", "date": "2025-07-05", "time": "16:30", "status": "Confirmed", "owner": "Lan Pham" },
+    { "id": 5, "title": "Sales retro", "date": "2025-07-06", "time": "10:00", "status": "Pending", "owner": "John Doe" }
+  ],
+  "timeline": [
+    { "id": 1, "label": "New lead", "description": "Contacted new inbound lead from Google.", "time": "08:45", "status": "Completed" },
+    { "id": 2, "label": "Meeting scheduled", "description": "Demo booked with Airbnb team.", "time": "10:15", "status": "Confirmed" },
+    { "id": 3, "label": "Proposal sent", "description": "Pricing proposal sent to Microsoft.", "time": "13:30", "status": "Sent" },
+    { "id": 4, "label": "Support follow-up", "description": "Followed up on demo request.", "time": "15:00", "status": "In progress" }
+  ]
+}
